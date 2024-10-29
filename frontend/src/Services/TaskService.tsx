@@ -1,6 +1,6 @@
 import axios from "axios";
 import { handleError } from "../Helpers/ErrorHandler";
-import { AddTask, GetTask } from "../Models/task";
+import { AddTask, GetTask } from "../Models/Task";
 
 const api = "http://localhost:5295/api/task/";
 

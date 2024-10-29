@@ -52,7 +52,7 @@ useEffect(() => {
           localStorage.setItem("user", JSON.stringify(userObj));
           setToken(res?.data.token);
           setUser(userObj!);
-          toast.success("Login successful!"); // Call the 'toast' function with the desired message
+          toast.success("Login successful!");
           navigate("/");
         }
       })
@@ -71,7 +71,7 @@ useEffect(() => {
           localStorage.setItem("user", JSON.stringify(userObj));
           setToken(res?.data.token);
           setUser(userObj!);
-          toast.success("Login successful!"); // Call the 'toast' function with the desired message
+          toast.success("Login successful!");
           navigate("/dashboard");
         }
       })
@@ -83,12 +83,12 @@ useEffect(() => {
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
     setToken("");
+    toast.success("Logged out successfully!");
     navigate("/");
-    toast.success("You have logged out successfully!");
   };
 
   return (
@@ -100,4 +100,4 @@ useEffect(() => {
   );
 };
 
-export const UseAuth = () => React.useContext(UserContext);
+export const UserAuth = () => React.useContext(UserContext);

@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { UseAuth } from "../Context/UseAuth";
+import { UserAuth } from "../Context/UserAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -16,7 +16,7 @@ const validation = Yup.object().shape({
 });
 
 const RegisterPage = () => {
-  const { registerUser } = UseAuth();
+  const { registerUser } = UserAuth();
   const {
     register,
     handleSubmit,
@@ -36,7 +36,10 @@ const RegisterPage = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl">
               Create an account
             </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(handleLogin)}>
+            <form
+              className="space-y-4 md:space-y-6"
+              onSubmit={handleSubmit(handleLogin)}
+            >
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                   Email

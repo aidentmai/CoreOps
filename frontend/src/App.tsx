@@ -1,6 +1,6 @@
-import "react-toastify/dist/ReactToastify.css"
+import "react-toastify/dist/ReactToastify.css";
 import { Outlet } from "react-router";
-import { UserProvider } from "./Context/UseAuth";
+import { UserProvider } from "./Context/UserAuth";
 import { ToastContainer } from "react-toastify";
 
 function App() {

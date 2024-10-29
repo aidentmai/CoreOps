@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { UseAuth } from "../Context/UseAuth";
+import { UserAuth } from "../Context/UserAuth";
 
 const Hero = () => {
-  const { isLoggedIn } = UseAuth();
+  const { isLoggedIn } = UserAuth();
   return (
     <div className="flex flex-col justify-center max-w-[1200px] md:h-[70vh] mx-auto py-8">
       <p className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600  inline-block font-bold text-center">

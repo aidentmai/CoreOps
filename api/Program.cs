@@ -7,24 +7,23 @@ using api.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services
     .AddControllers()
-    .AddJsonOptions(options =>
+    .AddNewtonsoftJson(options =>
     {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.SerializerSettings.Converters.Add(new StringEnumConverter());
     });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddControllers().AddNewtonsoftJson(options => {
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-});
 
 builder.Services.AddSwaggerGen(option =>
 {

@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { UseAuth } from "../Context/UseAuth";
+import { UserAuth } from "../Context/UserAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -14,7 +14,7 @@ const validation = Yup.object().shape({
 });
 
 const LoginPage = () => {
-  const { loginUser } = UseAuth();
+  const { loginUser } = UserAuth();
   const {
     register,
     handleSubmit,
@@ -24,8 +24,8 @@ const LoginPage = () => {
   });
 
   const handleLogin = (form: LoginFormsInput) => {
-    loginUser(form.userName, form.password)
-  }
+    loginUser(form.userName, form.password);
+  };
 
   return (
     <section className="">
@@ -35,7 +35,10 @@ const LoginPage = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight  md:text-2xl">
               Sign in to your account
             </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(handleLogin)}>
+            <form
+              className="space-y-4 md:space-y-6"
+              onSubmit={handleSubmit(handleLogin)}
+            >
               <div>
                 <label className="block mb-2 text-sm font-medium">
                   Username

@@ -1,27 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AddTaskAPI } from "../Services/TaskService";
-import { GetTeam } from "../Models/Team";
 import { toast } from "react-toastify";
+import { GetTeamsAPI } from "../Services/TeamService";
+import { GetTeam } from "../Models/Team";
 
-interface TaskFormProps {
-  teamMembers: { userId: string; userName: string }[];
+interface AddTaskFormProps {
   onClose: () => void;
+  onTaskAdded: () => void;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ teamMembers, onClose }) => {
-  // State to manage modal visibility
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  // State to manage form data
+const AddTaskForm = ({ onClose, onTaskAdded }: AddTaskFormProps) => {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-  const [status, setStatus] = useState("Open");
+  const [status] = useState("Open");
   const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
-  const [teams] = useState<GetTeam[]>([]);
+  const [teams, setTeams] = useState<GetTeam[]>([]);
+  const [teamMembers, setTeamMembers] = useState<{ userId: string; userName: string }[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string>("");
 
-  const handleAddTask = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await GetTeamsAPI();
+        if (response && response.data) { // Check if response and response.data exist
+          setTeams(response.data);
+          const members = response.data.flatMap((team: GetTeam) => team.teamMembers);
+          setTeamMembers(members);
+        }
+      } catch (error) {
+        toast.error("Failed to fetch teams");
+      }
+    };
+
+    fetchTeams();
+  }, []);
+
+  const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     // Initialize teamId and userId
     let teamId: number = 0;
@@ -31,33 +47,32 @@ const TaskForm: React.FC<TaskFormProps> = ({ teamMembers, onClose }) => {
     teams.map((team) => {
       teamId = team.teamId;
       team.teamMembers.map((member) => {
-        if (member.userId === selectedUserId) {
+        if(member.userId === selectedUserId) {
           userId = member.userId;
         }
-      });
-    });
-    
+      })
+    })
+
     try {
-        await AddTaskAPI(
-            taskName,
-            taskDescription,
-            status,
-            priority,
-            dueDate,
-            teamId,
-            userId
-          );
-          onClose();
+      await AddTaskAPI(
+        taskName,
+        taskDescription,
+        status,
+        priority,
+        dueDate,
+        teamId,
+        userId
+      );
+      toast.success("Task added successfully");
+      onTaskAdded();
+      onClose();
     } catch (error) {
-        toast.warning("Failed to add task");
+      toast.error("Failed to add task");
     }
   };
 
   return (
-    <div className="relative p-4 w-full max-w-md max-h-full">
-      {/* Modal Toggle */}
-      {isModalOpen && (
-          <div
+      <div
             id="crud-modal"
             className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
           >
@@ -72,7 +87,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ teamMembers, onClose }) => {
                   <button
                     type="button"
                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                    onClick={() => setIsModalOpen(false)} // Close modal
+                    onClick={() => onClose()} // Close modal
                   >
                     <svg
                       className="w-3 h-3"
@@ -168,7 +183,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ teamMembers, onClose }) => {
                         htmlFor="teamMember"
                         className="block mb-2 text-sm font-medium text-gray-900"
                       >
-                        Team Member
+                        Assign To
                       </label>
                       <select
                         id="teamMember"
@@ -207,9 +222,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ teamMembers, onClose }) => {
               </div>
             </div>
           </div>
-        )}
-    </div>
   );
 };
 
-export default TaskForm;
+export default AddTaskForm;
