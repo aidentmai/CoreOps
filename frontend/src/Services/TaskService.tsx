@@ -1,6 +1,6 @@
 import axios from "axios";
 import { handleError } from "../Helpers/ErrorHandler";
-import { AddTask, GetTask } from "../Models/Task";
+import { AddTask, GetTask, UpdateTask } from "../Models/Task";
 
 const api = "http://localhost:5295/api/task/";
 
@@ -30,3 +30,12 @@ export const GetTaskAPI = async () => {
     handleError(error);
   }
 };
+
+export const UpdateTaskAPI = async (id: number, updatedTask: UpdateTask) => {
+  try {
+    const data = await axios.put<UpdateTask>(`${api}${id}`, updatedTask)
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+}

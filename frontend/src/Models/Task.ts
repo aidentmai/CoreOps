@@ -1,5 +1,5 @@
 export type GetTask = {
-    id: number;
+    taskId: number;
     title: string;
     description: string;
     status: string;
@@ -17,4 +17,13 @@ export type AddTask = {
     description: string;
     priority: string;
     dueDate: string;
+}
+
+export type UpdateTask = {
+    title: string;
+    description: string;
+    status: string;
+    priority: string;
+    dueDate: string;
+    updatedAt: string;
 }

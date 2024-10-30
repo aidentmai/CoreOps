@@ -46,6 +46,7 @@ useEffect(() => {
         if (res) {
           localStorage.setItem("token", res.data.token);
           const userObj = {
+            id: res?.data.id,
             userName: res?.data.userName,
             email: res?.data.email,
           };
@@ -65,6 +66,7 @@ useEffect(() => {
         if (res) {
           localStorage.setItem("token", res.data.token);
           const userObj = {
+            id: res?.data.id,
             userName: res?.data.userName,
             email: res?.data.email,
           };

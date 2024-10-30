@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { GetTeamsAPI } from "../Services/TeamService";
 import { GetTeam } from "../Models/Team";
 import TaskTable from "../components/TaskTable";
-import AddTaskForm from "../components/TaskForm";
+import AddTaskForm from "../components/AddTaskForm";
 import { GetTask } from "../Models/Task";
 import { GetTaskAPI } from "../Services/TaskService";
 
@@ -27,7 +27,7 @@ const DashboardPage = () => {
     } catch (error) {
       toast.error("Failed to fetch tasks");
     }
-  }
+  };
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -48,10 +48,14 @@ const DashboardPage = () => {
   const handleTaskAdded = () => {
     setIsModalOpen(false);
     fetchTasks();
-  }
+  };
+
+  const handleTaskUpdated = () => {
+    fetchTasks();
+  };
 
   return (
-    <div>
+    <div className="">
       <Navbar />
       <div className="flex flex-col max-w-[1200px] mx-auto py-8 items-center">
         <button
@@ -64,11 +68,21 @@ const DashboardPage = () => {
         {/* Modal Toggle */}
         {isModalOpen && (
           <div className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50">
-            <AddTaskForm onClose={() => setIsModalOpen(false)} onTaskAdded={handleTaskAdded} />
+            <AddTaskForm
+              onClose={() => setIsModalOpen(false)}
+              onTaskAdded={handleTaskAdded}
+            />
           </div>
         )}
       </div>
-      <TaskTable teams={teams} tasks={tasks}/>
+      <div className="">
+        <TaskTable
+          teams={teams}
+          tasks={tasks}
+          onTaskUpdated={handleTaskUpdated}
+          isDashboard={true}
+        />
+      </div>
     </div>
   );
 };

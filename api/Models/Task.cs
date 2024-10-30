@@ -17,9 +17,9 @@ namespace api.Models
         public DateTime dueDate { get; set; }
         public DateTime createdAt { get; set; } = DateTime.Now;
         public DateTime updatedAt { get; set; } = DateTime.Now;
-        public User User { get; set; }
+        public User userName { get; set; }
         public string userId { get; set; }
-        public Team Team { get; set; }
+        public Team teamName { get; set; }
         public int teamId { get; set; }
     }
 }

@@ -7,8 +7,10 @@ function App() {
   return (
     <>
       <UserProvider>
-        <Outlet />
-        <ToastContainer />
+        <div className="main-container">
+          <Outlet />
+          <ToastContainer />
+        </div>
       </UserProvider>
     </>
   );

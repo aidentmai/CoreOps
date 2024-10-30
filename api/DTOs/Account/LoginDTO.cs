@@ -9,8 +9,8 @@ namespace api.DTOs.Account
     public class LoginDTO
     {
         [Required]
-        public string Username { get; set; }
+        public string userName { get; set; } = string.Empty;
         [Required]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
     }
 }
