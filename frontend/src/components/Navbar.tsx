@@ -34,7 +34,7 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
               <li>
                 <a
@@ -56,7 +56,7 @@ const Navbar = () => {
           </div>
         </div>
         <div className="navbar-center">
-          <a className="text-3xl font-bold ml-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600  inline-block">
+          <a className="text-4xl font-bold ml-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600  inline-block">
             CoreOps
           </a>
         </div>
@@ -71,7 +71,7 @@ const Navbar = () => {
                 onClick={() => setDropDownVisible(!dropDownVisible)}
                 onBlur={() => setTimeout(() => setDropDownVisible(false), 200)}
               >
-                <span className="font-medium">Welcome, {user?.userName}</span>
+                <span className="font-medium">{user?.userName}</span>
                 <svg
                   className="w-2.5 h-2.5 ms-3"
                   aria-hidden="true"
@@ -90,7 +90,7 @@ const Navbar = () => {
               </button>
               <ul
                 id="dropdownDivider"
-                className={`menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow ${
+                className={`menu menu-sm dropdown-content bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow ${
                   dropDownVisible ? "" : "hidden"
                 }`}
               >
@@ -100,6 +100,14 @@ const Navbar = () => {
                     className="hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
                     My Tasks
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="messages"
+                    className="hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Messages
                   </a>
                 </li>
                 <li>

@@ -14,7 +14,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
   teams,
   tasks,
   onTaskUpdated,
-  isDashboard = false
+  isDashboard = false,
 }) => {
   // State management
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,6 +59,12 @@ const TaskTable: React.FC<TaskTableProps> = ({
               "Unknown User";
 
             // Format due date to show only month and day
+            const dueDate = new Date(task.dueDate);
+            const currentDate = new Date();
+            const timeDifference = dueDate.getTime() - currentDate.getTime();
+            const daysDifference = Math.ceil(
+              timeDifference / (1000 * 3600 * 24)
+            ); // Convert to days
             const formattedDueDate = new Date(task.dueDate).toLocaleDateString(
               "en-US",
               {
@@ -136,7 +142,13 @@ const TaskTable: React.FC<TaskTableProps> = ({
                     {task.priority}
                   </span>
                 </td>
-                <td className="pl-12">{formattedDueDate}</td>
+                <td
+                  className={`pl-12 ${
+                    daysDifference <= 3 ? "text-red-500" : ""
+                  }`}
+                >
+                  {formattedDueDate}
+                </td>
                 <td>
                   <button
                     className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center"

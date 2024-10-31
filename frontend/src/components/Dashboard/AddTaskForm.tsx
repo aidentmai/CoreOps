@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { AddTaskAPI } from "../Services/TaskService";
 import { toast } from "react-toastify";
-import { GetTeamsAPI } from "../Services/TeamService";
-import { GetTeam } from "../Models/Team";
+import { GetTeam } from "../../Models/Team";
+import { GetTeamsAPI } from "../../Services/TeamService";
+import { AddTaskAPI } from "../../Services/TaskService";
+
 
 interface AddTaskFormProps {
   onClose: () => void;

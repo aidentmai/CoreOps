@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { GetTeamsAPI } from "../Services/TeamService";
 import { GetTeam } from "../Models/Team";
 import TaskTable from "../components/TaskTable";
-import AddTaskForm from "../components/AddTaskForm";
+import AddTaskForm from "../components/Dashboard/AddTaskForm";
 import { GetTask } from "../Models/Task";
 import { GetTaskAPI } from "../Services/TaskService";
 
@@ -57,9 +57,9 @@ const DashboardPage = () => {
   return (
     <div className="">
       <Navbar />
-      <div className="flex flex-col max-w-[1200px] mx-auto py-8 items-center">
+      <div className="flex flex-col mx-auto py-8 items-end pr-16">
         <button
-          className="font-medium rounded-lg text-m px-3 py-3 w-24 text-center me-2 mb-2 border border-gray-300 inline-block"
+          className="bg-navajowhite font-medium rounded-lg text-m px-3 py-3 w-24 text-center me-2 mb-2 border border-gray-300 inline-block"
           onClick={() => setIsModalOpen(true)} // Open modal on click
         >
           Add Task

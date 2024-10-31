@@ -4,7 +4,7 @@ import { GetTask } from "../Models/Task";
 import { GetTaskAPI } from "../Services/TaskService";
 import { toast } from "react-toastify";
 import { GetTeam } from "../Models/Team";
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../components/TasksPage/SearchBar";
 import TaskTable from "../components/TaskTable";
 import { UserAuth } from "../Context/UserAuth";
 

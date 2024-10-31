@@ -6,6 +6,7 @@ import App from "../App";
 import DashboardPage from "../Pages/DashboardPage";
 import ProtectedRoute from "./ProtectedRoute";
 import TasksPage from "../Pages/TasksPage";
+import Messages from "../Pages/MessagePage";
 
 export const router = createBrowserRouter([
     {
@@ -16,7 +17,8 @@ export const router = createBrowserRouter([
             { path: "login", element: <LoginPage /> },
             { path: "register", element: <RegisterPage /> },
             { path: "dashboard", element: <ProtectedRoute><DashboardPage /></ProtectedRoute>},
-            { path: "tasks", element: <ProtectedRoute><TasksPage /></ProtectedRoute>}
+            { path: "tasks", element: <ProtectedRoute><TasksPage /></ProtectedRoute>},
+            { path: "messages", element: <ProtectedRoute><Messages /></ProtectedRoute>}
         ]
     }
 ])
