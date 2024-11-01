@@ -2,14 +2,15 @@
 import React, { SyntheticEvent } from "react";
 
 interface ChatInputProps {
-  onSubmit: (e: SyntheticEvent, message: string) => void;
+  sendMessage: (message: string) => void;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSubmit }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ sendMessage }) => {
   const [message, setMessage] = React.useState("");
-
+  
   const handleSubmit = (e: SyntheticEvent) => {
-    onSubmit(e, message);
+    e.preventDefault();
+    sendMessage(message);
     setMessage(""); // Clear the input after submission
   };
 

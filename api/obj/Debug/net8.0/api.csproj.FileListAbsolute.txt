@@ -152,3 +152,4 @@
 /Users/vmai/Desktop/Coding Projects/CoreOps/api/bin/Debug/net8.0/Newtonsoft.Json.dll
 /Users/vmai/Desktop/Coding Projects/CoreOps/api/bin/Debug/net8.0/Newtonsoft.Json.Bson.dll
 /Users/vmai/Desktop/Coding Projects/CoreOps/api/obj/Debug/net8.0/api.sourcelink.json
+/Users/vmai/Desktop/Coding Projects/CoreOps/api/bin/Debug/net8.0/System.Net.WebSockets.WebSocketProtocol.dll

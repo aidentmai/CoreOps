@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241101022245_AddMessagesTable")]
+    partial class AddMessagesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "923b3ecf-4e97-4bae-952c-db1788f2a0b1",
+                            Id = "ec629841-8cd6-4d23-a70c-7aa947577fa3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "84f96a85-186e-476d-9458-68f6d9611b78",
+                            Id = "a1bc6bdb-b75c-4078-b56f-6f2c10c3316a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -191,9 +194,6 @@ namespace api.Migrations
                     b.Property<string>("receiverId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("seen")
-                        .HasColumnType("bit");
 
                     b.Property<string>("senderId")
                         .IsRequired()

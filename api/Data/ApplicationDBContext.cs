@@ -18,6 +18,7 @@ namespace api.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<Models.Task> Tasks { get; set; }
         public DbSet<TeamMembership> TeamMemberships { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,18 @@ namespace api.Data
             .HasOne(t => t.Team)
             .WithMany(t => t.TeamMembers)
             .HasForeignKey(t => t.teamId);
+
+            modelBuilder.Entity<Message>()
+            .HasOne(m => m.Sender)
+            .WithMany()
+            .HasForeignKey(m => m.senderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+            .HasOne(m => m.Receiver)
+            .WithMany()
+            .HasForeignKey(m => m.receiverId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             List<IdentityRole> roles = new List<IdentityRole>
             {

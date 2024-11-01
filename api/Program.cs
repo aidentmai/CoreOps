@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using api.Data;
+using api.Hubs;
 using api.Interfaces;
 using api.Models;
 using api.Repository;
@@ -15,6 +16,7 @@ using Newtonsoft.Json.Converters;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSignalR();
 builder.Services
     .AddControllers()
     .AddNewtonsoftJson(options =>
@@ -91,6 +93,8 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+builder.Services.AddSingleton<ChatDB>();
+
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
@@ -121,5 +125,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chat");
 
 app.Run();
