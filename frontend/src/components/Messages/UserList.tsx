@@ -29,7 +29,7 @@ const UserList: React.FC<UserListProps> = ({
     console.log("Username: ", username);
     console.log("Chatroom: ", groupName);
     
-    setChatRoomId(member.userId);
+    setChatRoomId(groupName);
     setSelectedUserId(member.userId)
     setSelectedUserName(member.userName);
     

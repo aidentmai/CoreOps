@@ -25,22 +25,32 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
       } mb-3`}
     >
       <div
-        className={`flex flex-col w-full max-w-[320px] leading-1.5 pl-4 pr-4 border-gray-200 ${
+        className={`flex flex-col max-w-[80%] break-words leading-1.5 pl-4 pr-4 border-gray-200 ${
           isSender
             ? "bg-blue-500 text-white py-2.5 rounded-l-xl rounded-tr-xl"
-            : "bg-gray-200 text-black rounded-r-xl rounded-bl-xl"
+            : "bg-gray-200 text-black py-2.5 rounded-r-xl rounded-bl-xl"
         }`}
       >
         <div className="flex items-center space-x-2 rtl:space-x-reverse">
           {/* Additional info can go here, like avatars or usernames */}
         </div>
         {message.message}
-        <span className="text-xs font-normal text-gray-300">
+        <span
+          className={
+            isSender
+              ? "text-xs font-normal text-gray-300"
+              : "text-sm font-normal text-gray-400"
+          }
+        >
           {formatTimeStamp(message.timeStamp)}
         </span>
       </div>
       {isSender && isLatestMessage && (
-        <span className="text-sm font-normal text-gray-400">Delivered</span>
+        <span className="text-sm font-normal text-gray-400">
+          {isSender && isLatestMessage && (
+            <span className="text-sm font-normal text-gray-400">{message.seen ? "Seen" : "Delivered"}</span>
+          )}
+        </span>
       )}
     </div>
   );

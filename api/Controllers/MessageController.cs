@@ -54,5 +54,13 @@ namespace api.Controllers
 
             return Ok(message);
         }
+
+        [HttpGet("unread-messages")]
+        public async Task<int> GetUnreadMessages(string userId)
+        {
+            return await _context.Messages
+                        .Where(m => m.receiverId == userId && !m.seen)
+                        .CountAsync();
+        }
     }
 }

@@ -13,3 +13,12 @@ export const fetchMessagesAPI = async (chatRoomId: string): Promise<Message[]> =
         return [];
     }
 }
+
+export const fetchUnreadMessagesAPI = async (user: { id: string }) => {
+    try {
+        const response = await axios.get(`${api}unread-messages?userId=${user.id}`);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+}

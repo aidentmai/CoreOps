@@ -60,14 +60,19 @@ namespace api.Hubs
             // Map the new message back to the DTO to return the created message
             message.messageId = newMessage.messageId;
 
-            Console.WriteLine("Sending message to group with content: " + JsonConvert.SerializeObject(message));
-            Console.WriteLine($"Broadcasting to group: {groupName}");
+            // Notify receiver of unread messages
+            int unreadMessages = await GetUnreadMessages(message.receiverId);
+            await Clients.User(message.receiverId).SendAsync("ReceiveUnreadMessages", unreadMessages);
 
             // Broadcast the message to the group
             await Clients.Group(groupName).SendAsync("ReceiveMessage", message);
-            await Clients.Group(groupName).SendAsync("NewMessageNotification", message);
 
             return message;
+        }
+
+        public async Task<int> GetUnreadMessages(string userId)
+        {
+            return await _context.Messages.Where(m => m.receiverId == userId && !m.seen).CountAsync();
         }
 
         public async System.Threading.Tasks.Task MarkMessageAsSeen(int messageId)
@@ -79,8 +84,11 @@ namespace api.Hubs
                 message.seen = true; // Mark the message as seen
                 await _context.SaveChangesAsync();
 
+                var unreadMessages = await GetUnreadMessages(message.receiverId);
+                await Clients.User(message.receiverId).SendAsync("ReceiveUnreadMessages", unreadMessages);
+
                 // Notify all clients in the group about the seen status
-                await Clients.Group(message.ChatRoomId).SendAsync("MarkMessageSeen", messageId);
+                await Clients.Group(message.ChatRoomId).SendAsync("MarkMessageAsSeen", messageId);
             }
         }
         

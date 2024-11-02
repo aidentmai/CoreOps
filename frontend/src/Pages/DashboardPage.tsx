@@ -7,6 +7,8 @@ import TaskTable from "../components/TaskTable";
 import AddTaskForm from "../components/Dashboard/AddTaskForm";
 import { GetTask } from "../Models/Task";
 import { GetTaskAPI } from "../Services/TaskService";
+import { fetchUnreadMessagesAPI } from "../Services/MessageService";
+import { UserAuth } from "../Context/UserAuth";
 
 const DashboardPage = () => {
   // State to manage modal visibility
@@ -17,6 +19,11 @@ const DashboardPage = () => {
 
   // State to manage task
   const [tasks, setTasks] = useState<GetTask[]>([]);
+
+  // State to manage unread messages
+  const [unreadMessages, setUnreadMessages] = useState<number>(0);
+
+  const { user } = UserAuth();
 
   const fetchTasks = async () => {
     try {
@@ -41,8 +48,18 @@ const DashboardPage = () => {
       }
     };
 
+    const fetchUnreadMessages = async () => {
+      if (user?.id) {
+        const unreadCount = await fetchUnreadMessagesAPI({ id: user.id });
+        if(unreadCount !== undefined) {
+          setUnreadMessages(unreadCount);
+        }
+      }
+    }
+
     fetchTeams();
     fetchTasks();
+    fetchUnreadMessages();
   }, []);
 
   const handleTaskAdded = () => {
@@ -56,7 +73,7 @@ const DashboardPage = () => {
 
   return (
     <div className="">
-      <Navbar />
+      <Navbar unreadMessages={unreadMessages}/>
       <div className="flex flex-col mx-auto py-8 items-end pr-16">
         <button
           className="bg-navajowhite font-medium rounded-lg text-m px-3 py-3 w-24 text-center me-2 mb-2 border border-gray-300 inline-block"

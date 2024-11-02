@@ -59,19 +59,9 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
           }
         );
 
-        newConnection.on("NewMessageNotification", (message: Message) => {
-          if (message.senderId !== user?.id) {
-            toast.info(
-              `New message from ${selectedUserName}: ${message.message}`
-            );
-          }
-        });
-
         await newConnection.start();
         console.log("Connected!");
         setConnection(newConnection);
-
-        
 
         // Join the chat room
         await newConnection.invoke("JoinSpecificChatRoom", {
@@ -89,8 +79,6 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
       console.log(error);
     }
   };
-
-  console.log("Selected Username: ", selectedUserName);
 
   const sendMessage = async (msg: string): Promise<Message | void> => {
     if (connection && connection.connectionId && user) {
@@ -137,11 +125,21 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
           teams={teams}
         />
       </div>
-      <ChatRoom
-        chatRoomId={chatRoomId}
-        sendMessage={sendMessage}
-        connection={connection}
-      />
+      {connection && chatRoomId ? (
+        <ChatRoom
+          chatRoomId={chatRoomId}
+          selectedUserName={selectedUserName}
+          sendMessage={sendMessage}
+          connection={connection}
+        />
+      ) : (
+        <div className="w-3/4 p-4 border-t-2 border-gray-300 flex flex-col">
+          <div className="flex items-center">
+            {/* Chat area */}
+            <h1 className="text-3xl font-medium">Select a user to start chat</h1>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
