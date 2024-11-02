@@ -14,10 +14,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   const { user } = UserAuth();
   const isSender = message.senderId === user?.id;
 
-  console.log("received timestamp", message.timeStamp);
-
   const formatTimeStamp = (timestamp: string) => {
-    console.log(moment(timestamp).tz("America/Los_Angeles").format("h:mm A"));
     return moment.utc(timestamp).tz("America/Los_Angeles").format("h:mm A");
   };
 

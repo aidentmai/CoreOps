@@ -1,9 +1,11 @@
 using System.Threading.Tasks;
+using api.Controllers;
 using api.Data;
 using api.DTOs.Message;
 using api.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace api.Hubs
 {
@@ -18,13 +20,18 @@ namespace api.Hubs
             _context = context;
         }
 
+        public async System.Threading.Tasks.Task JoinChat(UserConnection connection)
+        {
+            await Clients.All.SendAsync("ReceiveMessage", connection.userName, $"{connection.userName} has joined the chat");
+        }
+
         public async System.Threading.Tasks.Task JoinSpecificChatRoom(UserConnection connection)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, connection.ChatRoom);
             _chatDB.connections[Context.ConnectionId] = connection;
 
             await Clients.Group(connection.ChatRoom)
-                .SendAsync("ReceiveMessage", "admin", $"{connection.userName} has joined {connection.ChatRoom}");
+                .SendAsync("JoinSpecificChatRoom", connection.userName, $"{connection.userName} has joined {connection.ChatRoom}");
         }
 
         public async Task<MessageDTO> SendMessage(MessageDTO message)
@@ -33,6 +40,7 @@ namespace api.Hubs
             {
                 throw new ArgumentNullException(nameof(message.message), "Message content cannot be null or empty.");
             }
+
             string groupName = GetGroupName(message.senderId, message.receiverId);
 
             // Save the message to the database
@@ -42,7 +50,8 @@ namespace api.Hubs
                 receiverId = message.receiverId,
                 message = message.message,
                 TimeStamp = DateTime.UtcNow,
-                ChatRoomId = message.ChatRoomId
+                ChatRoomId = message.ChatRoomId,
+                seen = false
             };
 
             _context.Messages.Add(newMessage);
@@ -51,11 +60,30 @@ namespace api.Hubs
             // Map the new message back to the DTO to return the created message
             message.messageId = newMessage.messageId;
 
+            Console.WriteLine("Sending message to group with content: " + JsonConvert.SerializeObject(message));
+            Console.WriteLine($"Broadcasting to group: {groupName}");
+
             // Broadcast the message to the group
             await Clients.Group(groupName).SendAsync("ReceiveMessage", message);
+            await Clients.Group(groupName).SendAsync("NewMessageNotification", message);
 
             return message;
         }
+
+        public async System.Threading.Tasks.Task MarkMessageAsSeen(int messageId)
+        {
+            // Find the message in the database
+            var message = await _context.Messages.FindAsync(messageId);
+            if (message != null)
+            {
+                message.seen = true; // Mark the message as seen
+                await _context.SaveChangesAsync();
+
+                // Notify all clients in the group about the seen status
+                await Clients.Group(message.ChatRoomId).SendAsync("MarkMessageSeen", messageId);
+            }
+        }
+        
         private string GetGroupName(string senderId, string receiverId)
             {
                 var stringCompare = string.CompareOrdinal(senderId, receiverId) < 0;

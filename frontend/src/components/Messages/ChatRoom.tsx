@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { handleError } from "../../Helpers/ErrorHandler";
 import { fetchMessagesAPI } from "../../Services/MessageService";
 import ChatBubble from "./ChatBubble";
@@ -7,49 +7,62 @@ import { Message } from "../../Models/Message";
 import { HubConnection } from "@microsoft/signalr";
 
 interface ChatRoomProps {
-    chatRoomId: string;
-    sendMessage: (message: string) => Promise<Message | void>;
-    connection: HubConnection | undefined;
+  chatRoomId: string;
+  sendMessage: (message: string) => Promise<Message | void>;
+  connection: HubConnection | undefined;
 }
 
-const ChatRoom: React.FC<ChatRoomProps>= ({ chatRoomId, sendMessage, connection }) => {
-    const [chatMessages, setChatMessages] = useState<Message[]>([]);
+const ChatRoom: React.FC<ChatRoomProps> = ({ chatRoomId, sendMessage, connection }) => {
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const chatMessagesRef = useRef<Message[]>([]);
 
-    useEffect(() => {
-        const getMessages = async () => {
-            try {
-                const fetchMessages = await fetchMessagesAPI(chatRoomId);
-                setChatMessages(fetchMessages || []);
-            } catch (error) {
-                handleError(error);
-            }
-        };
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const fetchMessages = await fetchMessagesAPI(chatRoomId);
+        setChatMessages(fetchMessages || []);
+        chatMessagesRef.current = fetchMessages || [];
+      } catch (error) {
+        handleError(error);
+      }
+    };
 
-        if(chatRoomId) {
-            getMessages();
+    const markMessagesAsSeen = async () => {
+      if (connection) {
+        for (const message of chatMessagesRef.current) {
+          await connection.invoke("MarkMessageAsSeen", message.messageId);
         }
+      }
+    };
 
-        // Listen for incoming messages
-        const handleIncomingMessage = (message: Message) => {
-            setChatMessages((prevMessages) => [...prevMessages, message]);
-        }
+    if (chatRoomId) {
+      getMessages();
+      markMessagesAsSeen();
+    }
 
-        if(connection) {
-            connection.on("ReceiveMessage", handleIncomingMessage);
-        }
+    // Listen for incoming messages
+    const handleIncomingMessage = (message: Message) => {
+      chatMessagesRef.current = [...chatMessagesRef.current, message];
+      setChatMessages([...chatMessagesRef.current]);
+    };
 
-        // Cleanup the connection on component unmount
-        return () => {
-            if(connection) {
-                connection.off("ReceiveMessage", handleIncomingMessage);
-            }
-        }
-    }, [chatRoomId, connection])
+    if (connection) {
+      connection.on("ReceiveMessage", handleIncomingMessage);
+    }
+
+    // Cleanup the connection on component unmount
+    return () => {
+      if (connection) {
+        connection.off("ReceiveMessage", handleIncomingMessage);
+      }
+    };
+  }, [chatRoomId, connection]);
 
   const handleSendMessage = async (message: string) => {
     const newMessage = await sendMessage(message);
     if (newMessage) {
-        setChatMessages((prevMessages) => [...prevMessages, newMessage]);
+      chatMessagesRef.current = [...chatMessagesRef.current, newMessage];
+      setChatMessages([...chatMessagesRef.current]);
     }
   };
 
@@ -57,20 +70,23 @@ const ChatRoom: React.FC<ChatRoomProps>= ({ chatRoomId, sendMessage, connection 
   const latestMessage = chatMessages.length - 1;
 
   return (
-      <div className="w-3/4 p-4 border-t-2 border-gray-300 flex flex-col">
-        {/* Chat area */}
-        <div className="text-xl font-bold mb-4">User 1</div>
-        <div
-          className="flex-1 border border-gray-300 p-4 overflow-y-scroll"
-          style={{ maxHeight: "calc(70vh - 70px)" }}
-        >
-          {chatMessages.map((msg, index) => (
-            <ChatBubble key={`${msg.messageId}-${index}`} message={msg} isLatestMessage={index === latestMessage}
-            />
-          ))}
-        </div>
-        <ChatInput sendMessage={handleSendMessage} />
+    <div className="w-3/4 p-4 border-t-2 border-gray-300 flex flex-col">
+      {/* Chat area */}
+      <div className="text-xl font-bold mb-4">User 1</div>
+      <div
+        className="flex-1 border border-gray-300 p-4 overflow-y-scroll"
+        style={{ maxHeight: "calc(70vh - 70px)" }}
+      >
+        {chatMessages.map((msg, index) => (
+          <ChatBubble
+            key={`${msg.messageId}-${index}`}
+            message={msg}
+            isLatestMessage={index === latestMessage}
+          />
+        ))}
       </div>
+      <ChatInput sendMessage={handleSendMessage} />
+    </div>
   );
 };
 

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.DTOs.Message;
+using api.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 
 namespace api.Controllers
 {
@@ -13,9 +16,12 @@ namespace api.Controllers
     public class MessageController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public MessageController(ApplicationDBContext context)
+        private readonly IHubContext<ChatHub> _hubContext;
+
+        public MessageController(ApplicationDBContext context, IHubContext<ChatHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [HttpGet("{chatRoomId}")]
@@ -27,6 +33,26 @@ namespace api.Controllers
                                 .ToListAsync();
 
             return Ok(messages);
+        }
+
+        [HttpPost("mark-seen")]
+        public async Task<IActionResult> MarkMessageAsSeen([FromBody] MarkSeenRequestDTO request)
+        {
+            var message = await _context.Messages.FindAsync(request.messageId);
+
+            if (message == null)
+            {
+                return NotFound();
+            }
+
+            // Update the seen property
+            message.seen = true;
+            await _context.SaveChangesAsync();
+
+            // Notify clients that the message has been seen
+            await _hubContext.Clients.Group(message.ChatRoomId).SendAsync("MarkMessageSeen", message.messageId);
+
+            return Ok(message);
         }
     }
 }

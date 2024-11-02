@@ -1,3 +1,4 @@
+import { UserAuth } from "../../Context/UserAuth";
 import { GetTeam, TeamMember } from "../../Models/Team";
 
 interface UserListProps {
@@ -17,21 +18,26 @@ const UserList: React.FC<UserListProps> = ({
   setChatRoomId,
   teams,
 }) => {
+  const { user } = UserAuth();
 
   const handleJoinChatRoom = (member: TeamMember) => {
+    const groupName =
+          (user?.id ?? "") < member.userId
+            ? `${user?.id}-${member.userId}`
+            : `${member.userId}-${user?.id}`;
+    
     console.log("Username: ", username);
-    console.log("Chatroom: ", member.userName);
-
+    console.log("Chatroom: ", groupName);
+    
     setChatRoomId(member.userId);
-
-    if (username && member.userName) {
-      joinChatRoom(username, member.userName);
-    }
-
     setSelectedUserId(member.userId)
     setSelectedUserName(member.userName);
-    console.log("Joining chat room");
+    
+    if (username && member.userName) {
+      joinChatRoom(username, groupName);
+    }
   };
+
   return (
     <div className="flex flex-col gap-6">
       {teams.map((team) =>
