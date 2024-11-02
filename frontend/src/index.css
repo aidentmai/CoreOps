@@ -9,7 +9,3 @@
 .bg-primary-color {
     @apply bg-gradient-to-r from-orange-400 to-pink-600 inline-block;
   }
-
-/* In your CSS file (e.g., App.css) */
-.main-container {
-}

@@ -17,7 +17,8 @@ export const fetchMessagesAPI = async (chatRoomId: string): Promise<Message[]> =
 export const fetchUnreadMessagesAPI = async (user: { id: string }) => {
     try {
         const response = await axios.get(`${api}unread-messages?userId=${user.id}`);
-        return response.data;
+        const data = await response.data;
+        return data;
     } catch (error) {
         handleError(error);
     }

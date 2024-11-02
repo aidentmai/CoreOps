@@ -56,11 +56,16 @@ namespace api.Controllers
         }
 
         [HttpGet("unread-messages")]
-        public async Task<int> GetUnreadMessages(string userId)
+        public async Task<Dictionary<string, int>> GetUnreadMessages(string userId)
         {
-            return await _context.Messages
-                        .Where(m => m.receiverId == userId && !m.seen)
-                        .CountAsync();
+            var unreadCounts = await _context.Messages
+                                    .Where(m => m.receiverId == userId && !m.seen)
+                                    .GroupBy(m => m.senderId)
+                                    .Select(group => new { SenderId = group.Key, Count = group
+                                    .Count() })
+                                    .ToDictionaryAsync(g => g.SenderId, g => g.Count);
+            
+            return unreadCounts;
         }
     }
 }

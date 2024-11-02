@@ -124,7 +124,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
           <ChatBubble
             key={`${msg.messageId}-${index}`}
             message={msg}
-            isLatestMessage={index === latestMessage}
+            isLatestMessage={index === chatMessages.length - 1}
           />
         ))}
         <div ref={chatContainerRef}></div>

@@ -21,6 +21,7 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [selectedUserName, setSelectedUserName] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
+
   const { user } = UserAuth();
 
   useEffect(() => {
@@ -136,7 +137,9 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
         <div className="w-3/4 p-4 border-t-2 border-gray-300 flex flex-col">
           <div className="flex items-center">
             {/* Chat area */}
-            <h1 className="text-3xl font-medium">Select a user to start chat</h1>
+            <h1 className="text-3xl font-medium">
+              Select a user to start chat
+            </h1>
           </div>
         </div>
       )}
