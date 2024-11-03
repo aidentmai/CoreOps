@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { GetTeam } from "../../Models/Team";
 import { GetTeamsAPI } from "../../Services/TeamService";
 import { AddTaskAPI } from "../../Services/TaskService";
+import { UserAuth } from "../../Context/UserAuth";
 
 
 interface AddTaskFormProps {
@@ -19,6 +20,7 @@ const AddTaskForm = ({ onClose, onTaskAdded }: AddTaskFormProps) => {
   const [teams, setTeams] = useState<GetTeam[]>([]);
   const [teamMembers, setTeamMembers] = useState<{ userId: string; userName: string }[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string>("");
+  const { user } = UserAuth();
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -27,7 +29,8 @@ const AddTaskForm = ({ onClose, onTaskAdded }: AddTaskFormProps) => {
         if (response && response.data) { // Check if response and response.data exist
           setTeams(response.data);
           const members = response.data.flatMap((team: GetTeam) => team.teamMembers);
-          setTeamMembers(members);
+          const filteredMembers = members.filter((member) => member.userId !== user?.id);
+          setTeamMembers(filteredMembers);
         }
       } catch (error) {
         toast.error("Failed to fetch teams");

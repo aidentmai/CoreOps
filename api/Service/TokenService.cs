@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using api.Interfaces;
 using api.Models;
+using Google.Apis.Auth;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Service
@@ -46,6 +47,23 @@ namespace api.Service
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleTokenAsync(string token)
+        {
+            try
+            {
+                var settings = new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new List<string> { _config["Authentication:Google:ClientId"]}
+                };
+
+                return await GoogleJsonWebSignature.ValidateAsync(token, settings);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

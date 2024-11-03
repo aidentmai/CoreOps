@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using api.DTOs.Account;
 using api.Interfaces;
@@ -50,6 +51,36 @@ namespace api.Controllers
                     Token = _tokenService.CreateToken(user)
                 }
             );
+        }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDTO googleLogin)
+        {
+            var payload = await _tokenService.VerifyGoogleTokenAsync(googleLogin.token);
+            if(payload == null)
+                return Unauthorized("Invalid Google token");
+            
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+            if(user == null)
+            {
+                user = new User
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email
+                };
+
+                var result = await _userManager.CreateAsync(user);
+                if(!result.Succeeded)
+                    return StatusCode(500, result.Errors);
+            }
+
+            return Ok(new NewUserDTO
+                {
+                    id = user.Id,
+                    userName = user.UserName,
+                    Email = user.Email,
+                    Token = _tokenService.CreateToken(user)
+                });
         }
 
         [HttpPost("register")]

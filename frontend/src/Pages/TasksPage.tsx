@@ -7,6 +7,7 @@ import { GetTeam } from "../Models/Team";
 import SearchBar from "../components/TasksPage/SearchBar";
 import TaskTable from "../components/TaskTable";
 import { UserAuth } from "../Context/UserAuth";
+import { useNotifications } from "../Context/Notification";
 
 const TasksPage = () => {
   const [tasks, setTasks] = useState<GetTask[]>([]);
@@ -17,6 +18,7 @@ const TasksPage = () => {
   const [searchResults, setSearchResults] = useState<GetTask[]>([]);
   const [isSearchActive, setIsSearchActive] = useState<boolean>(false);
   const { user } = UserAuth();
+  const { totalUnreadMessages } = useNotifications();
 
   const fetchTasks = async () => {
     try {
@@ -68,7 +70,7 @@ const TasksPage = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar totalUnreadMessages={totalUnreadMessages}/>
       <SearchBar
         searchTask={searchTask}
         setSearchTask={setSearchTask}

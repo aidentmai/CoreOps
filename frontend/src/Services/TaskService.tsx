@@ -39,3 +39,12 @@ export const UpdateTaskAPI = async (id: number, updatedTask: UpdateTask) => {
     handleError(error);
   }
 }
+
+export const DeleteTaskAPI = async (id: number) => {
+  try {
+    const data = await axios.delete(`${api}${id}`);
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+}

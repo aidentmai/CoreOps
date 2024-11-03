@@ -5,6 +5,7 @@ using api.Interfaces;
 using api.Models;
 using api.Repository;
 using api.Service;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,8 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+
+
 // Connect to the database
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("local"));
@@ -87,6 +90,9 @@ builder.Services.AddAuthentication(options => {
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
         )
     };
+}).AddGoogle(googleOptions => {
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? string.Empty;
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? string.Empty;
 });
 
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();

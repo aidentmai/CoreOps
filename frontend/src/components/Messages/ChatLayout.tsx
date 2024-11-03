@@ -135,7 +135,7 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
         />
       ) : (
         <div className="w-3/4 p-4 border-t-2 border-gray-300 flex flex-col">
-          <div className="flex items-center">
+          <div className="flex justify-center items-center h-full">
             {/* Chat area */}
             <h1 className="text-3xl font-medium">
               Select a user to start chat

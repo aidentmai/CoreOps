@@ -1,4 +1,5 @@
 export type UserProfileToken = {
+    name: any;
     id: string;
     userName: string;
     email: string;

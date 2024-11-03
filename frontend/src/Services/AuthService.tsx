@@ -16,6 +16,17 @@ export const loginAPI = async (username: string, password: string) => {
   }
 };
 
+export const loginGoogleAPI = async (token: string) => {
+  try {
+    const data = await axios.post<UserProfileToken>(api + "account/google-login", {
+      token: token,
+    });
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 export const registerAPI = async (
   email: string,
   username: string,

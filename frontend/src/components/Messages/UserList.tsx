@@ -55,7 +55,7 @@ const UserList: React.FC<UserListProps> = ({
               >
                 <span>{member.userName}</span>
                 {unreadCount > 0 && (
-                  <span className="flex items-center justify-center w-6 h-6 bg-red-500 text-white rounded-full text-xs">
+                  <span className="flex items-center justify-center w-6 h-6 bg-orange-400 text-white rounded-full text-xs">
                     {unreadCount}
                   </span>
                 )}

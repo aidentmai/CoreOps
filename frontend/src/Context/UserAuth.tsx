@@ -3,13 +3,14 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserProfile } from "../Models/User";
-import { loginAPI, registerAPI } from "../Services/AuthService";
+import { loginAPI, loginGoogleAPI, registerAPI } from "../Services/AuthService";
 
 type UserContextType = {
   user: UserProfile | null;
   token: string | null;
   registerUser: (email: string, username: string, password: string) => void;
   loginUser: (username: string, password: string) => void;
+  loginGoogleUser: (token: string) => void;
   logout: () => void;
   isLoggedIn: () => boolean;
 };
@@ -80,6 +81,25 @@ useEffect(() => {
       .catch((e) => toast.warning("Server error occurred!"));
   };
 
+  const loginGoogleUser = async (token: string) => {
+    await loginGoogleAPI(token).then((res) => {
+        if (res) {
+            localStorage.setItem("token", res.data.token);
+            const userObj = {
+                id: res?.data.id,
+                userName: res?.data.userName,
+                email: res?.data.email,
+            };
+            localStorage.setItem("user", JSON.stringify(userObj));
+            setToken(token);
+            setUser(userObj);
+            toast.success("Login successful!");
+            navigate("/dashboard");
+        }
+    }).catch((e) => toast.warning("Google login failed!"));
+};
+
+
   const isLoggedIn = () => {
     return !!user;
   };
@@ -95,7 +115,7 @@ useEffect(() => {
 
   return (
     <UserContext.Provider
-      value={{ loginUser, user, token, logout, isLoggedIn, registerUser }}
+      value={{ loginUser, loginGoogleUser, user, token, logout, isLoggedIn, registerUser }}
     >
       {isReady ? children : null}
     </UserContext.Provider>

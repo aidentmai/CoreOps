@@ -2,6 +2,8 @@ import * as Yup from "yup";
 import { UserAuth } from "../Context/UserAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 type LoginFormsInput = {
   userName: string;
@@ -14,7 +16,7 @@ const validation = Yup.object().shape({
 });
 
 const LoginPage = () => {
-  const { loginUser } = UserAuth();
+  const { loginUser, loginGoogleUser } = UserAuth();
   const {
     register,
     handleSubmit,
@@ -26,6 +28,15 @@ const LoginPage = () => {
   const handleLogin = (form: LoginFormsInput) => {
     loginUser(form.userName, form.password);
   };
+
+  const handleGoogleLogin = (credentialResponse: any) => {
+    if(credentialResponse.credential) {
+      const token = credentialResponse.credential;
+      loginGoogleUser(token!);
+    } else {
+      console.error("Google login failed");
+    }
+  }
 
   return (
     <section className="">
@@ -101,6 +112,12 @@ const LoginPage = () => {
               >
                 Sign in
               </button>
+              <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
               <p className="text-sm font-light">
                 Don’t have an account yet?{" "}
                 <a
