@@ -25,17 +25,16 @@ export const UserProvider = ({ children }: Props) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isReady, setIsReady] = useState(false);
 
-
-useEffect(() => {
+  useEffect(() => {
     const user = localStorage.getItem("user");
     const token = localStorage.getItem("token");
     if (user && token) {
-        setUser(JSON.parse(user));
-        setToken(token);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set the 'Authorization' header with the token
+      setUser(JSON.parse(user));
+      setToken(token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set the 'Authorization' header with the token
     }
     setIsReady(true);
-}, []);
+  }, []);
 
   const registerUser = async (
     email: string,
@@ -82,23 +81,24 @@ useEffect(() => {
   };
 
   const loginGoogleUser = async (token: string) => {
-    await loginGoogleAPI(token).then((res) => {
+    await loginGoogleAPI(token)
+      .then((res) => {
         if (res) {
-            localStorage.setItem("token", res.data.token);
-            const userObj = {
-                id: res?.data.id,
-                userName: res?.data.userName,
-                email: res?.data.email,
-            };
-            localStorage.setItem("user", JSON.stringify(userObj));
-            setToken(token);
-            setUser(userObj);
-            toast.success("Login successful!");
-            navigate("/dashboard");
+          localStorage.setItem("token", res.data.token);
+          const userObj = {
+            id: res?.data.id,
+            userName: res?.data.userName,
+            email: res?.data.email,
+          };
+          localStorage.setItem("user", JSON.stringify(userObj));
+          setToken(token);
+          setUser(userObj);
+          toast.success("Login successful!");
+          navigate("/dashboard");
         }
-    }).catch((e) => toast.warning("Google login failed!"));
-};
-
+      })
+      .catch((e) => toast.warning("Google login failed!"));
+  };
 
   const isLoggedIn = () => {
     return !!user;
@@ -115,7 +115,15 @@ useEffect(() => {
 
   return (
     <UserContext.Provider
-      value={{ loginUser, loginGoogleUser, user, token, logout, isLoggedIn, registerUser }}
+      value={{
+        loginUser,
+        loginGoogleUser,
+        user,
+        token,
+        logout,
+        isLoggedIn,
+        registerUser,
+      }}
     >
       {isReady ? children : null}
     </UserContext.Provider>

@@ -1,17 +1,23 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { fetchUnreadMessagesAPI } from '../Services/MessageService';
-import { UserAuth } from '../Context/UserAuth';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { fetchUnreadMessagesAPI } from "../Services/MessageService";
+import { UserAuth } from "../Context/UserAuth";
 
 interface NotificationsContextType {
-  unreadMessages: { [userId: string]: number};
+  unreadMessages: { [userId: string]: number };
   totalUnreadMessages: number;
   updateUnreadMessages: () => void;
 }
 
-const NotificationsContext = createContext<NotificationsContextType | undefined>(undefined);
+const NotificationsContext = createContext<
+  NotificationsContextType | undefined
+>(undefined);
 
-export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [unreadMessagesByUser, setUnreadMessagesByUser] = useState<{[userId: string]: number}>({});
+export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [unreadMessagesByUser, setUnreadMessagesByUser] = useState<{
+    [userId: string]: number;
+  }>({});
   const [totalUnreadMessages, setTotalUnreadMessages] = useState<number>(0);
   const { user } = UserAuth();
 
@@ -23,7 +29,10 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    const total = Object.values(unreadMessagesByUser).reduce((acc, count) => acc + count, 0);;
+    const total = Object.values(unreadMessagesByUser).reduce(
+      (acc, count) => acc + count,
+      0
+    );
     setTotalUnreadMessages(total);
   }, [unreadMessagesByUser]);
 
@@ -32,7 +41,13 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [user]);
 
   return (
-    <NotificationsContext.Provider value={{ unreadMessages: unreadMessagesByUser, totalUnreadMessages, updateUnreadMessages }}>
+    <NotificationsContext.Provider
+      value={{
+        unreadMessages: unreadMessagesByUser,
+        totalUnreadMessages,
+        updateUnreadMessages
+      }}
+    >
       {children}
     </NotificationsContext.Provider>
   );
@@ -41,7 +56,9 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useNotifications = () => {
   const context = useContext(NotificationsContext);
   if (context === undefined) {
-    throw new Error('useNotifications must be used within a NotificationsProvider');
+    throw new Error(
+      "useNotifications must be used within a NotificationsProvider"
+    );
   }
   return context;
 };

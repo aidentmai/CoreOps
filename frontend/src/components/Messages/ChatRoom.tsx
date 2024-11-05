@@ -108,9 +108,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     }
   };
 
-  // Determine latest message
-  const latestMessage = chatMessages.length - 1;
-
   return (
     <div className="w-3/4 p-4 border-t-2 border-gray-300 flex flex-col">
       {/* Chat area */}

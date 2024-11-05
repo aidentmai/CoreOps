@@ -11,6 +11,7 @@ import { GetTeam } from "../../Models/Team";
 import { GetTeamsAPI } from "../../Services/TeamService";
 import { toast } from "react-toastify";
 import { Message } from "../../Models/Message";
+import { useNotifications } from "../../Context/Notification";
 
 interface ChatLayoutProps {}
 
@@ -23,6 +24,7 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
   const [messages, setMessages] = useState<Message[]>([]);
 
   const { user } = UserAuth();
+  const { updateUnreadMessages } = useNotifications();
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -37,6 +39,18 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
     };
 
     fetchTeams();
+  }, []);
+
+  useEffect(() => {
+    updateUnreadMessages();
+
+    const interval = setInterval(() => {
+      updateUnreadMessages();
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
+    }
   }, []);
 
   const joinChatRoom = async (username: string, chatroom: string) => {
@@ -85,7 +99,7 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
     if (connection && connection.connectionId && user) {
       try {
         const timestamp = new Date().toISOString();
-
+        
         const message: Message = {
           messageId: 0,
           senderId: user?.id,
@@ -99,10 +113,6 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({}) => {
         };
 
         await connection.invoke("SendMessage", message);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { ...message, isSender: true },
-        ]);
 
         return message;
       } catch (error) {
