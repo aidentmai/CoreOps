@@ -6,3 +6,4 @@ Tech Stack:
   ASP.NET Core Web API
   Azure Data Studio
   SQL Server
+  SignalR
